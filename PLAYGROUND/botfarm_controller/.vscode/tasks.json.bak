@@ -1,0 +1,8 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Assistant: Plan",   "type":"shell", "command":"python", "args":["main.py","plan"],   "options":{ "cwd":"${workspaceFolder}" }, "group":"build", "problemMatcher":[] },
+    { "label": "Assistant: Options","type":"shell", "command":"python", "args":["main.py","options"],"options":{ "cwd":"${workspaceFolder}" }, "group":"build", "problemMatcher":[] },
+    { "label": "Assistant: What-If","type":"shell", "command":"python", "args":["main.py","whatif"], "options":{ "cwd":"${workspaceFolder}" }, "group":"build", "problemMatcher":[] }
+  ]
+}

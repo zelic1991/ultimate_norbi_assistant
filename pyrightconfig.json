@@ -1,0 +1,12 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "./PLAYGROUND",
+      "venvPath": "./.venv",
+      "venv": ".venv"
+    }
+  ],
+  "reportMissingTypeStubs": false,
+  "typeCheckingMode": "basic",
+  "exclude": ["**/PREVIEWS/**", "**/_backup/**", "OPS/**"]
+}

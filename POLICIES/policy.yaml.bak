@@ -1,0 +1,48 @@
+---
+# Grundlegende Richtlinien für den Pilot‑Agenten.
+
+tonality:
+  style: "klar, professionell, unternehmerisch"
+  positivity: "motivierend"
+  no_fluff: true  # Keine Beschönigungen, klare Meinungen.
+
+directories:
+  allow: ["RAW", "CURRENT", "ARCHIVE"]
+  description:
+    RAW: "Eingangsdaten, die nach kurzer Zeit automatisch komprimiert werden."
+    CURRENT: "Der aktuelle Arbeitsstand pro Thema; nur eine Datei pro Datensatz."
+    ARCHIVE: "Sparsame Snapshots für Historie und Nachvollziehbarkeit."
+
+retention:
+  raw_days_before_compress: 1  # Tage, nach denen RAW‑Dateien komprimiert werden
+  archive_frequency: "monthly"  # Wie oft Snapshots im ARCHIVE angelegt werden
+
+risk_levels:
+  delete: "high"  # Löschen erfordert immer Bestätigung
+  modify: "medium"  # Modifikationen erfordern Preview und ggf. Bestätigung
+  read: "low"
+
+notification:
+  channels:
+    - telegram
+  digest_frequency: "daily"  # Häufigkeit der Status‑Berichte
+
+metrics:
+  track_latency: true
+  track_space_savings: true
+  track_error_rate: true
+
+glossary:
+  kelly: "Kelly Criterion für Wettentscheidungen"
+  clv: "Closing Line Value"
+  "30-Punkte-Check": "Eigene Liste zur Spiele‑Analyse"
+
+permissions:
+  external_api_calls: false  # Standardmäßig keine externen API‑Aufrufe ohne Rücksprache
+  file_deletion_requires_confirmation: true
+
+execution_modes:
+  safe_mode: true  # Nur Simulationen, keine wirklichen Änderungen
+  active_mode: false
+
+---

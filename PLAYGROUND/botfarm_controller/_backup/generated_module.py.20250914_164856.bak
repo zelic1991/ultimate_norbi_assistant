@@ -1,0 +1,15 @@
+﻿"""Minimal generated module used by smoke tests.
+
+This file is safe to overwrite by the codegen workflow; it's a small helper
+that exposes a `handler()` function returning 'OK' for the smoke test.
+"""
+
+
+def handler():
+    return "OK"
+
+
+# Generated STUB (2025-09-14 15:56:49)
+"""SPEC:
+hello world
+"""

@@ -1,0 +1,11 @@
+﻿openai>=1.40.0
+python-telegram-bot>=21.4
+pyyaml>=6.0.1
+schedule>=1.2.1
+duckdb>=1.0.0
+pyarrow>=17.0.0
+tqdm>=4.66.4
+rich>=13.7.1
+orjson>=3.10.7
+fastapi>=0.110.0
+uvicorn>=0.22.0

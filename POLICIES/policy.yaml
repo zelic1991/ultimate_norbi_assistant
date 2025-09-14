@@ -1,0 +1,32 @@
+﻿tone: "unternehmerisch_direkt"
+ask_limit: 1
+
+allow_dirs:
+  - "C:\\Users\\Norbi\\Ultimate_Norbi_Assistant"
+  - "D:\\Sportdaten"
+
+auto_allow:
+  - "compress_raw"
+  - "dedupe_current"
+  - "artifact_cleanup"
+
+needs_approval:
+  - "mass_edit"
+  - "delete_non_artifacts"
+  - "structure_changes"
+
+scheduler:
+  archive_raw_minutes: 30
+  retire_old_hour: 3
+
+digest:
+  hour: 18
+  kpis:
+    - "intent_accuracy"
+    - "automation_rate"
+    - "dedupe_rate"
+    - "space_saved_mb"
+    - "error_rate"
+
+retention_days: 90
+compress_after_days: 1

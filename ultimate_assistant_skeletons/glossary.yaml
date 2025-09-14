@@ -1,0 +1,8 @@
+# glossary.yaml – persönliches Glossar für deinen Agenten
+# Füge hier deine Begriffe, Abkürzungen und ihre Bedeutungen ein.
+# Diese Datei wird vom Assistenten gelesen, um deinen Sprachstil und Kontext
+# besser zu verstehen. Nutze sie als erweiterbare Liste.
+
+kelly_light: "Kelly-Lichtgewicht – eine Strategie zur Wettquotenoptimierung."
+clv: "Closing Line Value – Differenz zwischen prognostizierter Quote und Schlussquote."
+"30-punkte-check": "Deine 30-Punkte-Checkliste zur Qualitätskontrolle von Daten." 

@@ -1,0 +1,18 @@
+{
+  "status": "PREVIEW_ONLY",
+  "ts": "20250914_175011",
+  "model": "gpt-5-mini",
+  "target": "C:\\Code\\Bots\\botfarm_controller\\generated_module.py",
+  "preview_path": "C:\\Code\\Bots\\botfarm_controller\\PREVIEWS\\gen_20250914_175011.py",
+  "adds": 2,
+  "rems": 2,
+  "rationale": "self_work",
+  "risk_note": "n/a",
+  "patch": [
+    {
+      "path": "C:\\Code\\Bots\\botfarm_controller\\generated_module.py",
+      "text": "# Generated STUB (2025-09-14 17:50:11)\n\"\"\"SPEC:\nBitte schreibe eine handler() Funktion, die 'hi from self-work' zurückgibt.\n\"\"\"\ndef handler():\n    return \"OK\"\n"
+    }
+  ],
+  "draft_path": "C:\\Code\\Bots\\botfarm_controller\\OPS\\drafts\\draft_20250914_175011.json"
+}

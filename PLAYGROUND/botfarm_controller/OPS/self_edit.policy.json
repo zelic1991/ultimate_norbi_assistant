@@ -1,0 +1,13 @@
+{
+  "allow_dirs": ["."],
+  "deny_globs": [
+    "**/apply_preview.ps1",
+    "**/apply_*.*",
+    "**/policy*.json",
+    "**/.git/**",
+    "**/.secrets/**",
+    "**/secrets/**"
+  ],
+  "limits": { "max_files": 7, "max_lines_changed": 400 },
+  "approval": { "red_blocks_write": true, "yellow_needs_approval": true }
+}

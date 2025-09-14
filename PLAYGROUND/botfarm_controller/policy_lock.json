@@ -1,0 +1,15 @@
+{
+  "mode": "code_only",
+  "allow_dirs": [
+    ".",
+    ".."
+  ],
+  "guardrails": {
+    "no_write_outside_allow_dirs": true,
+    "require_preview_before_apply": true,
+    "ask_at_most_one_question": true
+  },
+  "scoring_weights": { "impact": 3, "effort": 2, "risk": 3, "reversibility": 2, "cost": 1, "maintainability": 2 },
+  "style": { "tone": "unternehmerisch, direkt, motivierend", "format_order": ["ergebnis","begründung","next_steps"] },
+  "approvals": { "high_risk_changes": "require_approve" }
+}

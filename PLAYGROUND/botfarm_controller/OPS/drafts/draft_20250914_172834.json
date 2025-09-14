@@ -1,0 +1,19 @@
+{
+  "status": "PREVIEW_ONLY",
+  "ts": "20250914_172834",
+  "model": "gpt-5",
+  "tokens": "n/a",
+  "target": "generated_module.py",
+  "preview_path": "C:\\Code\\Bots\\botfarm_controller\\PREVIEWS\\gen_20250914_172834.py",
+  "adds": 2,
+  "rems": 2,
+  "rationale": "fallback: no OpenAI",
+  "risk_note": "n/a",
+  "patch": [
+    {
+      "path": "generated_module.py",
+      "text": "# Generated STUB (2025-09-14 17:28:34)\n\"\"\"SPEC:\n\n\"\"\"\ndef handler():\n    return \"OK\"\n"
+    }
+  ],
+  "draft_path": "C:\\Code\\Bots\\botfarm_controller\\OPS\\drafts\\draft_20250914_172834.json"
+}

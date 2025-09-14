@@ -1,0 +1,10 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": ".\\PLAYGROUND" }
+  ],
+  "settings": {
+    "files.exclude": { "**/node_modules": true, "**/.venv": true },
+    "python.defaultInterpreterPath": ".\\.venv\\Scripts\\python.exe"
+  }
+}

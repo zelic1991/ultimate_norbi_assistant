@@ -1,0 +1,30 @@
+# generated_module.py
+# Schlanker Handler für den Botfarm-Controller: keine externen Abhängigkeiten.
+
+from __future__ import annotations
+from datetime import datetime
+import platform
+
+__all__ = ["handler", "__version__"]
+__version__ = "0.1.1"
+
+
+def handler() -> dict:
+    """
+    Wird vom /run-Endpoint geladen.
+    Gibt eine kleine Status-Payload zurück (json-serialisierbar).
+    """
+    return {
+        "ok": True,
+        "module": "generated_module",
+        "version": __version__,
+        "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "python": platform.python_version(),
+    }
+
+
+if __name__ == "__main__":
+    # Lokaler Schnelltest:
+    import json
+
+    print(json.dumps(handler(), ensure_ascii=False, indent=2))

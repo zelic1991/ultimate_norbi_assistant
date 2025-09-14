@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Assistant: Preview",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$b='http://127.0.0.1:8000'; $spec='Bitte schreibe handler() mit ''OK''.'; $p=Invoke-RestMethod -Uri ($b + '/preview') -Method POST -ContentType 'application/json' -Body (@{spec_text=$spec;target='generated_module.py';lang='py'}|ConvertTo-Json); Write-Host $p.preview_path"
+      ],
+      "options": { "cwd": "${workspaceFolder}" }
+    },
+    {
+      "label": "Assistant: Apply Last Preview",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "$b='http://127.0.0.1:8000'; $last=(Get-ChildItem PREVIEWS -File | Sort LastWriteTime -Desc | Select -First 1).FullName; Invoke-RestMethod -Uri ($b + '/apply') -Method POST -ContentType 'application/json' -Body (@{preview_path=$last;target='generated_module.py'}|ConvertTo-Json)"
+      ],
+      "options": { "cwd": "${workspaceFolder}" }
+    },
+    {
+      "label": "Assistant: Run",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "Invoke-RestMethod -Uri 'http://127.0.0.1:8000/run' | ConvertTo-Json -Depth 3"
+      ],
+      "options": { "cwd": "${workspaceFolder}" }
+    }
+  ]
+}
+

@@ -1,0 +1,166 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+botfarm_controller: VS Code gesteuerter Programmier-Assistant (Preview-first).
+Kommandos:
+  plan            – zeigt Roadmap + Prioritäten
+  options         – listet ≥3 Optionen + Scorecard & Empfehlung
+  whatif          – Simulation (#1 vs #2) mit Risikoampel & Rollback
+  approve         – Platzhalter (würde später Änderungen ausführen)
+  version         – zeigt Version/Policy
+"""
+
+from __future__ import annotations
+import argparse, json, os, sys, textwrap
+from pathlib import Path
+from dataclasses import dataclass
+
+ROOT = Path(__file__).resolve().parent
+POLICY_FILE = ROOT / "policy_lock.json"
+VERSION = "0.1.0"
+
+# --- Policy laden (lokal, unabhängig vom Repo-Root) ---
+DEFAULT_POLICY = {
+    "mode": "code_only",
+    "allow_dirs": [str(ROOT), str(ROOT.parent)],
+    "guardrails": {
+        "no_write_outside_allow_dirs": True,
+        "require_preview_before_apply": True,
+        "ask_at_most_one_question": True
+    },
+    "scoring_weights": {"impact":3,"effort":2,"risk":3,"reversibility":2,"cost":1,"maintainability":2},
+    "style": {"tone":"unternehmerisch, direkt, motivierend","format_order":["ergebnis","begründung","next_steps"]},
+    "approvals": {"high_risk_changes": "require_approve"}
+}
+
+def load_policy() -> dict:
+    try:
+        if POLICY_FILE.exists():
+            return json.loads(POLICY_FILE.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"[WARN] Policy konnte nicht gelesen werden: {e}")
+    return DEFAULT_POLICY
+
+POLICY = load_policy()
+
+# --- Scorecard-Helfer ---
+@dataclass
+class Score:
+    impact:int; effort:int; risk:int; reversibility:int; cost:int; maintainability:int
+    def total(self, w:dict) -> int:
+        # Effort/Risk/Cost invertieren (5 = wenig Aufwand/Risiko/Kosten)
+        eff = self.effort
+        ris = self.risk
+        cos = self.cost
+        return (
+            w.get("impact",1)*self.impact
+            + w.get("effort",1)*eff
+            + w.get("risk",1)*ris
+            + w.get("reversibility",1)*self.reversibility
+            + w.get("cost",1)*cos
+            + w.get("maintainability",1)*self.maintainability
+        )
+
+def options_with_scores():
+    # Drei realistische Wege für deinen Coding-Agent in VS Code
+    # (keine Ausführung, nur Bewertung)
+    w = POLICY.get("scoring_weights", {})
+    opts = [
+        {
+            "id":"#1",
+            "name":"VS-Code Tasks + lokaler CLI (dieses Projekt) + OpenAI Stub",
+            "score":Score(impact=4, effort=5, risk=5, reversibility=5, cost=4, maintainability=4)
+        },
+        {
+            "id":"#2",
+            "name":"VS-Code + Runner-Skript + Policy-Lock + spätere Sandbox-Exec",
+            "score":Score(impact=4, effort=4, risk=4, reversibility=5, cost=4, maintainability=4)
+        },
+        {
+            "id":"#3",
+            "name":"Full Bot Orchestrator (Tasks + Git + CI) sofort",
+            "score":Score(impact=5, effort=2, risk=3, reversibility=3, cost=3, maintainability=3)
+        }
+    ]
+    for o in opts:
+        o["total"] = o["score"].total(w)
+    opts.sort(key=lambda x: x["total"], reverse=True)
+    return opts
+
+def cmd_plan(args):
+    print("Ergebnis/Empfehlung:")
+    print("- Starte mit #1: lokaler CLI-Agent über VS-Code Tasks; alles Preview-first, kein Destruktiv.")
+    print("\nBegründung:")
+    print("- Geringstes Risiko, schnell einsatzfähig, sauber erweiterbar (OpenAI-Calls später zuschalten).")
+    print("\nNext Steps:")
+    print("1) `options` prüfen, 2) `whatif` für #1 vs #2, 3) bei Bedarf `approve` (später für echte Writes).")
+    print("\nPrioritäten: Trefferquote > Datenhygiene > Geschwindigkeit")
+
+def cmd_options(args):
+    opts = options_with_scores()
+    print("Optionen + Scorecard (5=hoch / invertiert bei Aufwand,Risiko,Kosten):\n")
+    for o in opts:
+        s:Score = o["score"]
+        print(f"{o['id']} {o['name']}")
+        print(f"  Impact {s.impact} | Effort↘ {s.effort} | Risk↘ {s.risk} | Reversibility {s.reversibility} | Cost↘ {s.cost} | Maintainability {s.maintainability} → Total={o['total']}")
+    best = opts[0]; fallback = opts[1]
+    print("\nBest Pick:", best["id"], best["name"])
+    print("Fallback :", fallback["id"], fallback["name"])
+
+def cmd_whatif(args):
+    # Simuliere #1 vs #2 ohne zu schreiben
+    changes = [
+        "- (Nur Preview) Generiert/aktualisiert: README.md, policy_lock.json, .vscode/*, main.py",
+        "- Kein Schreiben außerhalb ALLOW_DIRS",
+    ]
+    sidefx = [
+        "- Keine Build-Pipelines betroffen",
+        "- Kompatibel mit bestehenden VS-Code Tasks",
+    ]
+    risk = [("Low","Preview-only, lokale Dateien"), ("Med","—"), ("High","—")]
+    rollback = "Rollback = Dateien aus letztem Commit/ZIP wiederherstellen (keine systemweiten Effekte)."
+    kpis = [
+        "Time-to-Scaffold: < 10s",
+        "Fehlerquote: ~0",
+        "Automationsrate: + (Tasks/Launch in VS Code)",
+    ]
+    print("WHAT-IF: #1 vs #2")
+    print("\nWas ändert sich konkret:\n" + "\n".join(changes))
+    print("\nSeiteneffekte:\n" + "\n".join(sidefx))
+    print("\nRisiko-Ampel:")
+    for level, note in risk:
+        print(f"  - {level}: {note}")
+    print("\nRollback-Pfad:\n", rollback)
+    print("\nKPI-Prognose:\n" + "\n".join(kpis))
+
+def cmd_approve(args):
+    # Platzhalter. Später hier: tatsächliche Writes/Exec – gated durch Policy.
+    print("APPROVE: Keine pending Änderungen im Preview-Modus. (Zukünftig hier: apply-Phase)")
+
+def cmd_version(args):
+    print(f"botfarm_controller v{VERSION}")
+    print("Policy:", POLICY_FILE if POLICY_FILE.exists() else "(default)")
+    print("Allow Dirs:", ", ".join(POLICY.get("allow_dirs", [])))
+
+def build_parser():
+    p = argparse.ArgumentParser(prog="botfarm_controller", description="Preview-first Programmier-Assistant (VS Code).")
+    sub = p.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("plan")
+    sub.add_parser("options")
+    sub.add_parser("whatif")
+    sub.add_parser("approve")
+    sub.add_parser("version")
+    return p
+
+def main(argv=None):
+    argv = argv if argv is not None else sys.argv[1:]
+    args = build_parser().parse_args(argv)
+    if   args.cmd == "plan":    cmd_plan(args)
+    elif args.cmd == "options": cmd_options(args)
+    elif args.cmd == "whatif":  cmd_whatif(args)
+    elif args.cmd == "approve": cmd_approve(args)
+    elif args.cmd == "version": cmd_version(args)
+    else: raise SystemExit(2)
+
+if __name__ == "__main__":
+    main()

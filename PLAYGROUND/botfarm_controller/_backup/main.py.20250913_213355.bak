@@ -1,0 +1,85 @@
+﻿# main.py — Botfarm Controller (Preview-first)
+from __future__ import annotations
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+from pathlib import Path
+from datetime import datetime
+import difflib
+
+ROOT = Path(__file__).resolve().parent
+PREVIEWS = ROOT / "PREVIEWS"
+PREVIEWS.mkdir(exist_ok=True)
+
+app = FastAPI(title="botfarm-controller")
+
+
+class PreviewIn(BaseModel):
+    spec_text: str
+    target: str = "main.py"  # Ziel-Datei für späteres Apply (via apply_preview.ps1)
+    lang: str = "py"  # "py" oder "ts" – wir generieren aktuell "py"
+
+
+@app.get("/health")
+def health():
+    return {"ok": True}
+
+
+def stub_from_spec(spec_text: str, lang: str = "py") -> str:
+    """Sehr einfacher Stub-Generator (Preview)."""
+    title = "generated_module"
+    if lang == "py":
+        return (
+            "# Generated from spec\n"
+            "from fastapi import FastAPI\n\n"
+            f'app = FastAPI(title="{title}")\n\n'
+            '@app.get("/health")\n'
+            "def health():\n"
+            '    return {"ok": True}\n'
+        )
+    # ggf. später: TS/Node-Stub
+    return "// TODO: TS stub\n"
+
+
+def line_diff_counts(old_text: str, new_text: str) -> tuple[int, int]:
+    diff = difflib.ndiff(old_text.splitlines(), new_text.splitlines())
+    adds = sum(1 for d in diff if d.startswith("+ "))
+    # ndiff erzeugt Iterator – neu erzeugen für Removals
+    diff = difflib.ndiff(old_text.splitlines(), new_text.splitlines())
+    rems = sum(1 for d in diff if d.startswith("- "))
+    return adds, rems
+
+
+@app.post("/preview")
+def preview(p: PreviewIn):
+    # 1) Stub bauen
+    code = stub_from_spec(p.spec_text, p.lang)
+
+    # 2) Preview-Datei schreiben
+    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+    ext = ".py" if p.lang == "py" else ".txt"
+    preview_path = PREVIEWS / f"spec_{ts}{ext}"
+    preview_path.write_text(code, encoding="utf-8")
+
+    # 3) Diff gegen Ziel (falls vorhanden) nur zählen (kein Schreiben!)
+    target_path = (ROOT / p.target).resolve()
+    old_text = target_path.read_text(encoding="utf-8") if target_path.exists() else ""
+    adds, rems = line_diff_counts(old_text, code)
+
+    return {
+        "preview_path": str(preview_path),
+        "target": str(target_path),
+        "adds": adds,
+        "rems": rems,
+        "note": "Preview geschrieben. Zum Übernehmen später apply_preview.ps1 nutzen.",
+    }
+
+
+@app.get("/previews")
+def list_previews(limit: int = 10):
+    files = sorted(PREVIEWS.glob("*"), key=lambda p: p.stat().st_mtime, reverse=True)
+    out = [
+        {"name": f.name, "size": f.stat().st_size, "time": f.stat().st_mtime}
+        for f in files[:limit]
+    ]
+    return {"items": out}

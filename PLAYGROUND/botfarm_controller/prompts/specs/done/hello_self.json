@@ -1,6 +1,0 @@
-{
-  "prompt": "Bitte schreibe eine handler() Funktion, die 'hi from self-work' zurückgibt.",
-  "target": "generated_module.py",
-  "lang": "py",
-  "model": "gpt-5-mini"
-}

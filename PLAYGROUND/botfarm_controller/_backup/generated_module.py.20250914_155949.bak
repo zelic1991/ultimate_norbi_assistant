@@ -1,7 +1,0 @@
-﻿# Generated preview from spec (2025-09-14 15:41:16)
-"""SPEC:
-Bitte schreibe eine Python-Funktion handler(), die den String "hi from botfarm" zurÃ¼ckgibt.
-"""
-def handler():
-    return "OK"
-

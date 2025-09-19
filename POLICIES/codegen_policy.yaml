@@ -1,0 +1,75 @@
+# Ultimate Norbi Assistant - Code Generation Policy
+# Defines rules, constraints and guidelines for automated code generation
+
+version: "1.0"
+name: "Ultimate Norbi Assistant Code Generation Policy"
+
+# Core Principles
+principles:
+  - "Minimal, surgical changes only"
+  - "Preserve existing functionality"
+  - "Follow existing code patterns and style"
+  - "Validate changes through testing"
+  - "Document significant changes"
+
+# Code Generation Rules
+generation_rules:
+  max_file_size: 10000  # lines
+  preserve_comments: true
+  follow_existing_style: true
+  require_tests: true
+  validate_syntax: true
+
+# Quality Gates
+quality_gates:
+  syntax_check: mandatory
+  linting: warn_only
+  type_check: warn_only
+  unit_tests: mandatory
+  integration_tests: optional
+
+# File Handling
+file_handling:
+  backup_before_changes: true
+  preserve_permissions: true
+  maintain_encoding: "utf-8"
+  max_changes_per_file: 50
+
+# Safety Constraints
+safety:
+  no_destructive_operations: true
+  require_confirmation_for_large_changes: true
+  preserve_git_history: true
+  no_credential_exposure: true
+
+# Language-specific Rules
+language_rules:
+  python:
+    style_guide: "PEP8"
+    type_hints: preferred
+    docstrings: required_for_public_apis
+    max_line_length: 120
+  
+  powershell:
+    style_guide: "PowerShell Best Practices"
+    error_handling: required
+    comment_based_help: preferred
+  
+  javascript:
+    style_guide: "ESLint recommended"
+    strict_mode: true
+    modern_syntax: preferred
+
+# Preview Mode Settings
+preview_mode:
+  enabled: true
+  show_diffs: true
+  warn_only_gates: true
+  require_approval: false
+
+# Approval Flow
+approval_flow:
+  auto_approve_safe_changes: true
+  require_manual_approval_threshold: 100  # lines changed
+  approval_timeout: 3600  # seconds
+  fallback_to_manual: true

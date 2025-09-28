@@ -1,0 +1,22 @@
+# Ultimate Norbi Assistant Requirements
+# Basic dependencies for VS Code & OpenAI integration
+
+# OpenAI API
+openai>=1.0.0
+
+# HTTP requests
+requests>=2.31.0
+
+# Configuration management
+python-dotenv>=1.0.0
+
+# File operations
+pathlib2>=2.3.7
+
+# JSON handling (standard library, but ensuring compatibility)
+# json - built-in
+
+# Development dependencies (optional)
+# pytest>=7.0.0
+# black>=23.0.0
+# flake8>=6.0.0
